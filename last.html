@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success Screen with Timer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body, html {
+            height: 100%;
+            width: 100%;
+            /* Allow scrolling on small phones if content overflows */
+            overflow-x: hidden;
+            overflow-y: auto;
+            background: #FFB7C5;
+        }
+
+        /* Vibrant Pink Gradient Background */
+        .main-container {
+            min-height: 100vh;
+            width: 100vw;
+            background: linear-gradient(180deg, #FFB7C5 0%, #FF99AC 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Reduced top padding for mobile screens */
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Main Header - Scaled down for mobile */
+        .congrats-title {
+            color: white;
+            font-size: 8vw; /* Fluid font size */
+            max-font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        /* Success Label */
+        .success-label {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        /* Central Message Card */
+        .info-card {
+            background-color: #FF6B8E;
+            width: 100%;
+            max-width: 350px;
+            padding: 20px 15px;
+            border-radius: 20px;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(255, 107, 142, 0.4);
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        /* Timer Styling */
+        .timer-display {
+            background-color: rgba(165, 124, 124, 0.85);
+            padding: 10px 20px;
+            border-radius: 15px;
+            color: white;
+            font-size: 3.5rem; /* Larger, but contained */
+            font-weight: 700;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        /* Footer Text */
+        .footer-note {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 500;
+            line-height: 1.5;
+            max-width: 300px;
+            margin-top: auto; /* Keeps it at the bottom of the flex container */
+            padding-top: 20px;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .emoji-pulse {
+            display: inline-block;
+            animation: heartBeat 1.5s infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 70%, 100% { transform: scale(1); }
+            14%, 42% { transform: scale(1.3); }
+        }
+
+        /* Media Query for very small devices */
+        @media (max-width: 360px) {
+            .timer-display { font-size: 2.8rem; }
+            .info-card { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        
+        <h1 class="congrats-title">CONGRATULATION!</h1>
+
+        <div class="success-label">
+            🎉 आपका भुगतान सफल रहा!
+        </div>
+
+        <div class="info-card">
+            अब आप कुछ ही पलों में अपनी पसंदीदा गर्ल से वीडियो कॉल पर जुड़ेंगे <span class="emoji-pulse">💋</span>
+        </div>
+
+        <div class="timer-display" id="timer">11:49</div>
+
+        <div class="footer-note">
+            कृपया ऐप को डिलीट न करें — हमारी टीम जल्द ही कॉल करेगी <span class="emoji-pulse">😘</span>
+        </div>
+
+    </div>
+
+    <script>
+        let totalSeconds = (11 * 60) + 49;
+        const timerElement = document.getElementById('timer');
+
+        function updateTimer() {
+            let minutes = Math.floor(totalSeconds / 60);
+            let seconds = totalSeconds % 60;
+            timerElement.textContent = 
+                `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+
+            if (totalSeconds > 0) {
+                totalSeconds--;
+            } else {
+                clearInterval(timerInterval);
+            }
+        }
+        const timerInterval = setInterval(updateTimer, 1000);
+    </script>
+
+</body>
+</html>
+    

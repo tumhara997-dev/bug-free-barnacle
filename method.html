@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Screen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #F8F9FA;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Loading Overlay */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #5E17EB;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Content Layout */
+        .main-content {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .top-logo-card {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        .upi-main-img { width: 80px; height: auto; }
+
+        .total-due { color: #388E3C; font-size: 26px; font-weight: 700; margin-bottom: 15px; }
+
+        .alert-box {
+            background-color: #FFF0F0;
+            border: 1px solid #FFCDD2;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .alert-text { color: #C62828; font-size: 14px; font-weight: 600; line-height: 1.4; }
+
+        /* Payment Icons Grid */
+        .icons-grid {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .icon-card {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 18px;
+            width: 85px;
+            height: 85px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        /* Selected Visual State */
+        .icon-card.selected {
+            border-color: #5E17EB;
+            background-color: #F5F0FF;
+            box-shadow: 0 0 10px rgba(94, 23, 235, 0.2);
+        }
+
+        .icon-card img { width: 100%; height: auto; object-fit: contain; }
+
+        /* Footer Button Section */
+        .pay-btn {
+            width: 100%;
+            background-color: #BB86FC;
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(187, 134, 252, 0.3);
+        }
+
+        .pay-btn:active { transform: scale(0.98); }
+
+        .secure-note { color: #888; font-size: 12px; margin-top: 15px; }
+
+    </style>
+</head>
+<body>
+
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p style="margin-top: 15px; font-weight: 600;">Processing Payment...</p>
+    </div>
+
+    <div class="main-content">
+        <div class="top-logo-card">
+            <img src="https://cdn.iconscout.com/icon/free/png-256/free-upi-logo-icon-svg-download-png-1747946.png" class="upi-main-img">
+        </div>
+
+        <h1 class="total-due">Total Due: ₹5 Only</h1>
+
+        <div class="alert-box">
+            <p class="alert-text">
+                💋 Unlock Private Live Video Chats!<br>
+                Please complete payment to activate your account.
+            </p>
+        </div>
+
+        <h2 style="font-size: 18px; margin-bottom: 20px;">Select Payment Mode</h2>
+
+        <div class="icons-grid selected">
+            <div class="icon-card" onclick="selectMethod(this)">
+                <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/google-pay-icon.png" alt="GPay">
+            </div>
+            <div class="icon-card" onclick="selectMethod(this)">
+                <img src="https://cdn.iconscout.com/icon/free/png-256/free-paytm-icon-svg-download-png-226448.png?f=webp" alt="Paytm">
+            </div>
+            <div class="icon-card" onclick="selectMethod(this)">
+                <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/phonepe-icon.png" alt="PhonePe">
+            </div>
+        </div>
+
+        <button class="pay-btn" onclick="handlePayClick()">Pay Now With UPI</button>
+        <p class="secure-note">100% Secure Payment Powered by NPCI</p>
+    </div>
+
+    <script>
+        let isSelected = true;
+
+        function selectMethod(element) {
+            // Remove 'selected' class from all cards
+            document.querySelectorAll('.icon-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            // Add 'selected' class to the clicked card
+            element.classList.add('selected');
+            isSelected = true;
+        }
+
+        function handlePayClick() {
+            if (!isSelected) {
+                alert("Please select a payment method first!");
+                return;
+            }
+
+            // Show loading screen
+            document.getElementById('loading-overlay').style.display = 'flex';
+
+            // Redirect after 2 seconds
+            setTimeout(() => {
+                window.location.href = "upi.html";
+            }, 2000);
+        }
+    </script>
+
+</body>
+</html>

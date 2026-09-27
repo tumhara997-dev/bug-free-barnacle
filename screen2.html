@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBL Bank - Credit Cards & Loans</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #F5F6F8; /* Light gray section background - matches design system */
+            color: #222222; /* Dark text */
+            max-width: 500px;
+            margin: 0 auto;
+            overflow-x: hidden;
+        }
+        
+        /* Main Container - White base */
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #F5F6F8;
+        }
+        
+        /* Header - Clean white, minimal, controlled blue */
+        .header {
+            background-color: #FFFFFF; /* Pure white */
+            padding: 18px 25px;
+            border-bottom: 1px solid #E0E0E0; /* Border gray */
+            box-shadow: none; /* No heavy shadow, minimal */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 80px;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        
+              .bank-logo {
+            width: 220px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+.bank-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* 👈 fix */
+    object-position: center;
+}
+        
+        }
+        
+        /* Page Title - Clean white card with dark blue heading */
+        .page-title {
+            background-color: #FFFFFF; /* White background */
+            color: #21317D; /* Dark blue for headings */
+            padding: 25px 20px;
+            text-align: center;
+            margin: 20px 20px 0 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            border: 1px solid #E0E0E0;
+        }
+        
+        .page-title h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #21317D;
+        }
+        
+        .page-title p {
+            font-size: 16px;
+            opacity: 0.85;
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.5;
+            color: #666666; /* Secondary text */
+        }
+        
+        /* Tabs Navigation - Clean border, neutral */
+        .tabs-container {
+            display: flex;
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E0E0E0;
+            margin: 20px 20px 25px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 18px 10px;
+            background-color: transparent;
+            border: none;
+            font-size: 16px;
+            font-weight: 700;
+            color: #666666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .tab-btn i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .tab-btn.active {
+            background-color: #21317D; /* Dark blue for active tab structure */
+            color: white;
+        }
+        
+        .tab-btn:hover:not(.active) {
+            background-color: #F5F6F8;
+            color: #ED1C24; /* Red accent on hover */
+        }
+        
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 0 20px 30px;
+            flex-grow: 1;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Cards Container - Modular card layout with spacing */
+        .cards-grid, .loans-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .card-item, .loan-item {
+            background-color: #FFFFFF; /* White card */
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            border: 1px solid #E0E0E0;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-item:hover, .loan-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(33, 49, 125, 0.08); /* subtle blue shadow */
+        }
+        
+        .card-image, .loan-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+            background-color: #F5F6F8;
+        }
+        
+        .card-image img, .loan-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .card-item:hover .card-image img,
+        .loan-item:hover .loan-image img {
+            transform: scale(1.03);
+        }
+        
+        .card-badge, .loan-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #ED1C24; /* Red accent for attention */
+            color: white;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-content, .loan-content {
+            padding: 22px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-title, .loan-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #21317D; /* Dark blue for headings */
+        }
+        
+        .card-description, .loan-description {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #666666;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        
+        .card-features, .loan-features {
+            margin-bottom: 22px;
+            padding-left: 18px;
+        }
+        
+        .card-feature, .loan-feature {
+            font-size: 14px;
+            color: #222222;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .card-feature:before, .loan-feature:before {
+            content: "✓";
+            color: #ED1C24; /* Red accent checkmark */
+            font-weight: bold;
+            position: absolute;
+            left: -18px;
+        }
+        
+        .interest-rate {
+            display: inline-block;
+            background-color: #F5F6F8;
+            color: #21317D;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 15px;
+            border: 1px solid #E0E0E0;
+        }
+        
+        .card-actions, .loan-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+        
+        /* CTA Buttons - Red accent for primary actions */
+        .btn-apply {
+            background-color: #ED1C24; /* Red CTA */
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(237, 28, 36, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            margin-right: 15px;
+        }
+        
+        .btn-apply:hover {
+            background-color: #d11920;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(237, 28, 36, 0.25);
+        }
+        
+        .btn-apply i {
+            margin-right: 8px;
+        }
+        
+        .btn-details {
+            background-color: #FFFFFF;
+            color: #21317D; /* Dark blue text */
+            border: 1px solid #E0E0E0;
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-details:hover {
+            background-color: #F5F6F8;
+            border-color: #ED1C24;
+            color: #ED1C24;
+        }
+        
+        /* Footer - White background, clean */
+        .footer {
+            background-color: #FFFFFF;
+            color: #666666;
+            padding: 25px 20px;
+            margin-top: 20px;
+            border-top: 1px solid #E0E0E0;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+        
+        .footer-link {
+            color: #21317D; /* Dark blue links */
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 12px;
+            width: 48%;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .footer-link:hover {
+            color: #ED1C24; /* Red hover */
+            text-decoration: underline;
+        }
+        
+        .footer-disclaimer {
+            font-size: 12px;
+            line-height: 1.6;
+            border-top: 1px solid #E0E0E0;
+            padding-top: 18px;
+            margin-top: 15px;
+            color: #666666;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #E0E0E0;
+        }
+        
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .contact-icon {
+            background-color: #FFFFFF;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #E0E0E0;
+        }
+        
+        .contact-icon i {
+            color: #21317D;
+            font-size: 20px;
+        }
+        
+        .contact-text {
+            font-size: 12px;
+            font-weight: 500;
+            color: #666666;
+        }
+        
+        /* Back to login link */
+        .back-to-login {
+            text-align: center;
+            padding: 15px 20px 25px;
+        }
+        
+        .back-link {
+            color: #21317D; /* Dark blue */
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: 2px solid #21317D;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s;
+            background-color: white;
+        }
+        
+        .back-link:hover {
+            background-color: #ED1C24; /* Red on hover */
+            border-color: #ED1C24;
+            color: white;
+        }
+        
+        .back-link i {
+            margin-right: 8px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .tab-content {
+                padding: 0 16px 25px;
+            }
+            
+            .card-content, .loan-content {
+                padding: 18px;
+            }
+            
+            .card-title, .loan-title {
+                font-size: 20px;
+            }
+            
+            .page-title {
+                margin: 16px 16px 0 16px;
+            }
+            
+            .page-title h1 {
+                font-size: 24px;
+            }
+            
+            .page-title p {
+                font-size: 14px;
+            }
+            
+            .card-actions, .loan-actions {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .btn-apply {
+                margin-right: 0;
+                width: 100%;
+            }
+            
+            .btn-details {
+                width: 100%;
+            }
+            
+            .tabs-container {
+                margin: 16px 16px 20px;
+            }
+            
+            .tab-btn {
+                font-size: 15px;
+                padding: 16px 8px;
+            }
+            
+            .tab-btn i {
+                font-size: 16px;
+                margin-right: 6px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Main Container -->
+    <div class="container" id="main-container">
+        <!-- Header - RBL Bank Logo, white background -->
+        <header class="header">
+            <div class="logo-container">
+                <div class="bank-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/RBL_Bank_SVG_Logo.svg/960px-RBL_Bank_SVG_Logo.svg.png?_=20180315185242" alt="RBL Bank Logo" onerror="this.onerror=null; this.src='https://seeklogo.com/images/R/rbl-bank-logo-38A14DEB40-seeklogo.com.png';">
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Title - Clean white card with dark blue heading -->
+        <div class="page-title">
+            <h1>RBL Bank Credit Cards & Loans</h1>
+            <p>Choose from our premium range of credit cards and loans with attractive interest rates and exclusive benefits.</p>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs-container">
+            <button class="tab-btn active" id="credit-cards-tab" onclick="switchTab('credit-cards')">
+                <i class="fas fa-credit-card"></i> Credit Cards
+            </button>
+            <button class="tab-btn" id="loans-tab" onclick="switchTab('loans')">
+                <i class="fas fa-money-bill-wave"></i> Loans
+            </button>
+        </div>
+
+        <!-- Credit Cards Tab Content -->
+        <div class="tab-content active" id="credit-cards-content">
+            <div class="cards-grid" id="cards-grid">
+                <!-- Credit cards will be dynamically loaded here -->
+            </div>
+        </div>
+
+        <!-- Loans Tab Content -->
+        <div class="tab-content" id="loans-content">
+            <div class="loans-grid" id="loans-grid">
+                <!-- Loans will be dynamically loaded here -->
+            </div>
+        </div>
+        
+        <div class="back-to-login">
+            <a href="javascript:history.back()" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Login
+            </a>
+        </div>
+
+        <!-- Footer - RBL Bank style -->
+        <footer class="footer">
+            <div class="footer-links">
+                <a href="#" class="footer-link">Privacy Policy</a>
+                <a href="#" class="footer-link">Terms of Service</a>
+                <a href="#" class="footer-link">Security Tips</a>
+                <a href="#" class="footer-link">Contact Us</a>
+                <a href="#" class="footer-link">Branch Locator</a>
+                <a href="#" class="footer-link">FAQs</a>
+            </div>
+
+            <div class="footer-disclaimer">
+                <p>© 2025 RBL Bank Ltd. All rights reserved. RBL Bank is a registered trademark. This is a demonstration interface only.</p>
+                <p style="margin-top: 10px;">Always log out after completing your banking session and clear your browser cache for security.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+         const cardsData = [
+            {
+                id: 1,
+                title: "RBL Bank World Safari Credit Card",
+                description: "Premium travel credit card with zero forex markup and exclusive global benefits. Ideal for frequent international travelers.",
+                image: "https://images.unsplash.com/photo-1604594849809-dfedbc827105",
+                badge: "PREMIUM",
+                features: [
+                    "0% forex markup on international spends",
+                    "Complimentary airport lounge access worldwide",
+                    "Travel insurance and concierge services",
+                    "Reward points on international transactions"
+                ]
+            },
+            {
+                id: 2,
+                title: "RBL Bank Shoprite Credit Card",
+                description: "Save more on everyday shopping with cashback on groceries, fuel and utility bills.",
+                image: "https://images.unsplash.com/photo-1607082350899-7e105aa886ae",
+                badge: "POPULAR",
+                features: [
+                    "5% cashback on grocery spends",
+                    "Fuel surcharge waiver",
+                    "Rewards on utility bill payments",
+                    "Welcome benefits on activation"
+                ]
+            },
+            {
+                id: 3,
+                title: "RBL Bank Insignia Credit Card",
+                description: "Luxury credit card offering premium lifestyle benefits, travel perks, and exclusive privileges.",
+                image: "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc",
+                badge: "ELITE",
+                features: [
+                    "Unlimited lounge access",
+                    "Luxury hotel privileges",
+                    "Golf program benefits",
+                    "Dedicated concierge service"
+                ]
+            },
+            {
+                id: 4,
+                title: "RBL Bank Popcorn Credit Card",
+                description: "Designed for young users with rewards on entertainment, movies, and online subscriptions.",
+                image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d",
+                badge: "ENTRY LEVEL",
+                features: [
+                    "Discounts on movie tickets",
+                    "Cashback on OTT subscriptions",
+                    "Low annual fee",
+                    "Contactless payments"
+                ]
+            },
+            {
+                id: 5,
+                title: "RBL Bank Platinum Maxima Card",
+                description: "Get maximum rewards on daily spending categories including groceries, fuel, and dining.",
+                image: "https://images.unsplash.com/photo-1552083375-1447ce886485",
+                badge: "VALUE",
+                features: [
+                    "Reward points on all spends",
+                    "Dining discounts across partner restaurants",
+                    "Fuel surcharge waiver",
+                    "Easy EMI options"
+                ]
+            },
+            {
+                id: 6,
+                title: "RBL Bank World Elite Credit Card",
+                description: "Top-tier credit card with unmatched rewards, luxury travel privileges, and premium lifestyle services.",
+                image: "https://images.unsplash.com/photo-1541140532154-b024d705b90a",
+                badge: "ULTIMATE",
+                features: [
+                    "Unlimited global lounge access",
+                    "Premium concierge and lifestyle services",
+                    "High reward rate across categories",
+                    "Exclusive partner privileges"
+                ]
+            }
+         ];
+
+
+        // JSON data for loans
+        const loansData = [
+            {
+                id: 1,
+                title: "RBL Bank Car Loan",
+                description: "Finance your dream car with competitive interest rates and quick approval process.",
+                image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341",
+                badge: "POPULAR",
+                interestRate: "7.5% per annum",
+                features: [
+                    "Up to 100% financing",
+                    "Flexible tenure up to 7 years",
+                    "Quick loan approval",
+                    "Minimal documentation"
+                ]
+            },
+            {
+                id: 2,
+                title: "RBL Bank Home Loan",
+                description: "Make your dream home a reality with affordable housing finance solutions.",
+                image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa",
+                badge: "LOW INTEREST",
+                interestRate: "6.75% per annum",
+                features: [
+                    "High loan eligibility",
+                    "Flexible repayment tenure",
+                    "Balance transfer options",
+                    "Attractive interest rates"
+                ]
+            },
+            {
+                id: 3,
+                title: "RBL Bank Personal Loan",
+                description: "Meet your financial needs instantly with unsecured personal loans and fast disbursal.",
+                image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f",
+                badge: "INSTANT",
+                interestRate: "11% per annum",
+                features: [
+                    "No collateral required",
+                    "Fast approval process",
+                    "Flexible repayment options",
+                    "Instant disbursal"
+                ]
+            },
+            {
+                id: 4,
+                title: "RBL Bank Business Loan",
+                description: "Expand your business with customized loan solutions tailored to your needs.",
+                image: "https://images.unsplash.com/photo-1556761175-b413da4baf72",
+                badge: "BUSINESS",
+                interestRate: "12% per annum",
+                features: [
+                    "High loan amounts",
+                    "Flexible repayment tenure",
+                    "Quick processing",
+                    "Minimal paperwork"
+                ]
+            },
+            {
+                id: 5,
+                title: "RBL Bank Education Loan",
+                description: "Support your higher education dreams with flexible education loan options.",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxerUUniCqNavwGfScCZwlxKSyik3P2zRQT6eRLnf5EItKd9rIkh3wdz-V&s=10",
+                badge: "EDUCATION",
+                interestRate: "9% per annum",
+                features: [
+                    "Covers tuition and living expenses",
+                    "Flexible repayment options",
+                    "Moratorium period available",
+                    "Study in India or abroad"
+                ]
+            },
+            {
+                id: 6,
+                title: "RBL Bank Gold Loan",
+                description: "Get quick funds against your gold with secure storage and fast disbursal.",
+                image: "https://media.istockphoto.com/id/1291975213/photo/businesswoman-calculating-the-conversion-rate-for-indian-currency.jpg",
+                badge: "SECURED",
+                interestRate: "8.5% per annum",
+                features: [
+                    "High loan-to-value ratio",
+                    "Instant disbursal",
+                    "Safe gold storage",
+                    "Flexible repayment"
+                ]
+            }
+        ];
+
+        // Function to load credit cards from JSON data
+        function loadCreditCards() {
+            const cardsGrid = document.getElementById('cards-grid');
+            
+            cardsData.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card-item';
+                cardElement.innerHTML = `
+                    <div class="card-image">
+                        <img src="${card.image}" alt="${card.title}">
+                        <div class="card-badge">${card.badge}</div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">${card.title}</h3>
+                        <p class="card-description">${card.description}</p>
+                        
+                        <div class="card-features">
+                            ${card.features.map(feature => `<div class="card-feature">${feature}</div>`).join('')}
+                        </div>
+                        
+                        <div class="card-actions">
+                            <button class="btn-apply" onclick="applyForCard(${card.id})">
+                                <i class="fas fa-credit-card"></i> Apply Now
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                cardsGrid.appendChild(cardElement);
+            });
+        }
+        
+        // Function to load loans from JSON data
+        function loadLoans() {
+            const loansGrid = document.getElementById('loans-grid');
+            
+            loansData.forEach(loan => {
+                const loanElement = document.createElement('div');
+                loanElement.className = 'loan-item';
+                loanElement.innerHTML = `
+                    <div class="loan-image">
+                        <img src="${loan.image}" alt="${loan.title}">
+                        <div class="loan-badge">${loan.badge}</div>
+                    </div>
+                    <div class="loan-content">
+                        <h3 class="loan-title">${loan.title}</h3>
+                        <div class="interest-rate">Interest Rate: ${loan.interestRate}</div>
+                        <p class="loan-description">${loan.description}</p>
+                        
+                        <div class="loan-features">
+                            ${loan.features.map(feature => `<div class="loan-feature">${feature}</div>`).join('')}
+                        </div>
+                        
+                        <div class="loan-actions">
+                            <button class="btn-apply" onclick="applyForLoan(${loan.id})">
+                                <i class="fas fa-file-signature"></i> Apply Now
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                loansGrid.appendChild(loanElement);
+            });
+        }
+        
+        // Function to switch between tabs
+        function switchTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected tab content and activate button
+            document.getElementById(`${tabName}-content`).classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+        
+        // Function to handle Apply Now for credit cards
+        function applyForCard(cardId) {
+            const card = cardsData.find(c => c.id === cardId);
+            alert(`Applying for ${card.title}. You will be redirected to the application form.`);
+            // In a real application, you would redirect to the application page
+            window.location.href = `screen3.html?cardId=${cardId}`;
+        }
+        
+        // Function to handle Apply Now for loans
+        function applyForLoan(loanId) {
+            const loan = loansData.find(l => l.id === loanId);
+            // In a real application, you would redirect to the application page
+             window.location.href = `screen3.html?loanId=${loanId}`;
+        }
+        
+        // Load cards and loans when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCreditCards();
+            loadLoans();
+        });
+    </script>
+</body>
+
+</html>
